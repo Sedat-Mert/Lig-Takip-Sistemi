@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lig Takip Sistemi</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Lig Takip Sistemi</h1>
+  </header>
+
+  <!-- Arama Modülü -->
+  <section class="module">
+    <h2>Arama</h2>
+    <div class="form-group">
+      <select id="search-type" class="styled-select">
+        <option value="oyuncu">Oyuncu</option>
+        <option value="antrenor">Antrenör</option>
+        <option value="hakem">Hakem</option>
+        <option value="lig">Lig</option>
+      </select>
+      <button onclick="searchData()" class="btn">Ara</button>
+      <button onclick="clearResults()" class="btn btn-secondary">Kapat</button>
+    </div>
+    <table id="search-results">
+      <thead>
+        <tr><th>Sonuçlar</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+<!-- Takım Bilgileri Modülü -->
+<section class="module">
+  <h2>Takım Bilgileri</h2>
+  <div class="form-group">
+    <input type="number" id="lig-id-takimlar" placeholder="Lig ID Girin" class="input-field">
+    <button onclick="fetchTakimlar()" class="btn">Takım Bilgilerini Göster</button>
+    <button onclick="clearTakimlar()" class="btn btn-secondary">Kapat</button>
+  </div>
+  <table id="takimlar">
+    <thead>
+      <tr>
+        <th>Takım Adı</th>
+        <th>Stadyum Adı</th>
+        <th>Oyuncu Sayısı</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+  
+<!-- Puan Durumu Modülü -->
+<section class="module">
+  <h2>Puan Durumu</h2>
+  <div class="form-group">
+    <input type="number" id="lig-id" placeholder="Lig ID Girin" class="input-field">
+    <button onclick="fetchPuanDurumu()" class="btn">Puan Durumunu Göster</button>
+    <button onclick="clearPuanDurumu()" class="btn btn-secondary">Kapat</button>
+  </div>
+  <table id="puan-durumu">
+    <thead>
+      <tr>
+        <th>Takım</th>
+        <th>Oynanan Maç</th>
+        <th>Kazanılan Maç</th>
+        <th>Beraberlik</th>
+        <th>Kaybedilen Maç</th>
+        <th>Puan</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+
+  <!-- Oyuncu Ekleme Alanları -->
+  <section class="module">
+    <h2>Veri Ekleme Modülü</h2>
+  
+    <!-- Veri Türü Seçimi -->
+    <div class="form-group">
+      <label for="add-type">Eklenecek Veri Türü:</label>
+      <select id="add-type" class="styled-select" onchange="toggleFields()">
+        <option value="" disabled selected>Tür Seçin</option>
+        <option value="oyuncu">Oyuncu</option>
+        <option value="antrenor">Antrenör</option>
+        <option value="takim">Takım</option>
+      </select>
+    </div>
+  
+    <!-- Oyuncu Ekleme Alanları -->
+    <div id="player-fields" class="form-group" style="display:none;">
+      <h3>Oyuncu Ekle</h3>
+      <label for="player-name">Oyuncu Adı:</label>
+      <input type="text" id="player-name" placeholder="Oyuncu Adı" class="input-field">
+      
+      <label for="player-position">Pozisyon:</label>
+      <input type="text" id="player-position" placeholder="Pozisyon" class="input-field">
+      
+      <label for="player-date">Doğum Tarihi:</label>
+      <input type="date" id="player-date" class="input-field">
+      
+      <label for="player-team">Takım Adı:</label>
+      <input type="text" id="player-team" placeholder="Takım Adı" class="input-field">
+    </div>
+  
+    <!-- Antrenör Ekleme Alanları -->
+    <div id="coach-fields" class="form-group" style="display:none;">
+      <h3>Antrenör Ekle</h3>
+      <label for="coach-adi">Adı:</label>
+      <input type="text" id="coach-adi" placeholder="Antrenör Adı" class="input-field">
+      
+      <label for="coach-soyadi">Soyadı:</label>
+      <input type="text" id="coach-soyadi" placeholder="Antrenör Soyadı" class="input-field">
+      
+      <label for="coach-deneyimYili">Deneyim Yılı:</label>
+      <input type="number" id="coach-deneyimYili" placeholder="Deneyim Yılı" class="input-field">
+      
+      <label for="coach-teamId">Takım ID:</label>
+      <input type="number" id="coach-teamId" placeholder="Takım ID" class="input-field">
+    </div>
+  
+    <!-- Takım Ekleme Alanları -->
+    <div id="team-fields" class="form-group" style="display:none;">
+      <h3>Takım Ekle</h3>
+      <label for="team-name">Takım Adı:</label>
+      <input type="text" id="team-name" placeholder="Takım Adı" class="input-field">
+      
+      <label for="team-ligId">Lig ID:</label>
+      <input type="number" id="team-ligId" placeholder="Lig ID" class="input-field">
+      
+      <label for="team-stadium">Stadyum Adı:</label>
+      <input type="text" id="team-stadium" placeholder="Stadyum Adı" class="input-field">
+    </div>
+    <!-- İşlem Butonları -->
+    <div class="button-group">
+      <button onclick="addData()" class="btn">Ekle</button>
+    </div>
+  </section>
+  <section class="module">
+    <h2>Veri Silme Modülü</h2>
+  <!-- Silme Türü Seçimi -->
+  <div class="form-group">
+    <label for="delete-type">Silinecek Veri Türü:</label>
+    <select id="delete-type" class="styled-select" onchange="toggleDeleteFields()">
+      <option value="" disabled selected>Tür Seçin</option>
+      <option value="oyuncu">Oyuncu</option>
+      <option value="antrenor">Antrenör</option>
+      <option value="takim">Takım</option>
+    </select>
+  </div>
+
+  <!-- Oyuncu Silme Alanları -->
+  <div id="delete-player-fields" class="form-group" style="display:none;">
+    <label for="delete-player-name">Oyuncu Adı:</label>
+    <input type="text" id="delete-player-name" placeholder="Oyuncu Adı" class="input-field">
+    
+    <label for="delete-player-position">Pozisyon:</label>
+    <input type="text" id="delete-player-position" placeholder="Pozisyon" class="input-field">
+  </div>
+
+  <!-- Antrenör Silme Alanları -->
+  <div id="delete-coach-fields" class="form-group" style="display:none;">
+    <label for="delete-coach-name">Adı:</label>
+    <input type="text" id="delete-coach-name" placeholder="Antrenör Adı" class="input-field">
+    
+    <label for="delete-coach-surname">Soyadı:</label>
+    <input type="text" id="delete-coach-surname" placeholder="Antrenör Soyadı" class="input-field">
+  </div>
+
+  <!-- Takım Silme Alanları -->
+  <div id="delete-team-fields" class="form-group" style="display:none;">
+    <label for="delete-team-name">Takım Adı:</label>
+    <input type="text" id="delete-team-name" placeholder="Takım Adı" class="input-field">
+  </div>
+
+  <!-- Sil Butonu -->
+  <button onclick="deleteData()" class="btn">Sil</button>
+
+  
+      
+  <script src="app.js"></script>
+</body>
+</html>
